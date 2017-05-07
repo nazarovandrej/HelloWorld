@@ -26,7 +26,7 @@
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/main_activity"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen">
         </activity>
     </application>
 
