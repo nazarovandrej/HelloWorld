@@ -19,6 +19,7 @@ import butterknife.OnTextChanged;
 public class IntroActivity extends AppCompatActivity {
 
     private static final int MIN_LOGIN_LENGTH = 5;
+    private static final int PASSWORD_MIN_LENGTH = 8;
 
     @BindView(R.id.hint_text_view)
     TextView mHintTextView;
@@ -29,18 +30,22 @@ public class IntroActivity extends AppCompatActivity {
     @BindView(R.id.login_edit_text)
     EditText mLoginEditText;
 
+    @BindView(R.id.password_edit_text)
+    EditText mPasswordEditText;
+
     @BindView(R.id.phone_edit_text)
     EditText mPhoneEditText;
 
     boolean isLoginFieldCorrect = false;
     boolean isPhoneFieldCorrect = false;
+    boolean isPasswordCorrect = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
 
-        if(Utils.readIsAlreadyLoggedIn(this)) {
+        if (Utils.readIsAlreadyLoggedIn(this)) {
             goToMainActivity();
         }
 
@@ -66,6 +71,18 @@ public class IntroActivity extends AppCompatActivity {
         isLoginFieldCorrect = editable.length() >= MIN_LOGIN_LENGTH;
     }
 
+    @OnTextChanged(value = R.id.password_edit_text,
+            callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
+    void afterPasswordInput(Editable editable) {
+        isPasswordCorrect = editable.length() >= PASSWORD_MIN_LENGTH;
+        if (!isPasswordCorrect) {
+            mPasswordEditText.setError("password is easy! minimum " + PASSWORD_MIN_LENGTH + " digits");
+        } else {
+            mPasswordEditText.setError(null);
+            Utils.writePassword(this, editable.toString());
+        }
+    }
+
     // >>> private methods
 
     private void initMaskForPhoneField() {
@@ -87,7 +104,7 @@ public class IntroActivity extends AppCompatActivity {
     }
 
     private boolean isInputDataCorrect() {
-        return isLoginFieldCorrect && isPhoneFieldCorrect;
+        return isLoginFieldCorrect && isPhoneFieldCorrect && isPasswordCorrect;
     }
 
     private void goToMainActivity() {
